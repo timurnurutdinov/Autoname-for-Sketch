@@ -1,5 +1,6 @@
 @import 'type-inventory.cocoascript'
 @import 'get-place.cocoascript'
+@import 'get-corners.cocoascript'
 
 
 var currentDocument = nil
@@ -29,14 +30,31 @@ var scanCurrentLevel = function(layer) {
     typeName: "",
     typeNumber: -1,
     position: [],
+
     currentLevelLayers: 0,
-    allLevelLayers: 0
+    allLevelLayers: 0,
+
+    cornerRadius: -1,
+    shapeTypeNumber: -1,
+    insideShapeLayers: 0
+
+
   }
 
   levelData.name = layer.name()
   levelData.typeName = layer.className()
   levelData.typeNumber = TypeInventory.returnTypeNumber(layer)
   levelData.position = getPlace(layer)
+
+
+  if (TypeInventory.isShapeGroupType(levelData.typeName)) {
+      levelData.shapeTypeNumber = TypeInventory.getShapeTypeNumber(layer)
+      levelData.insideShapeLayers = TypeInventory.returnInsideLayersNumber(layer)
+
+      if (levelData.shapeTypeNumber == 0) {
+        levelData.cornerRadius = getCornerRadius(layer)
+      }
+  }
 
 
   if (TypeInventory.isGroupType(levelData.typeName) || TypeInventory.isArtboardType(levelData.typeName)) {
@@ -53,7 +71,13 @@ var scanCurrentLevel = function(layer) {
 
   }
 
-  log(levelData.name + ": c: " + levelData.currentLevelLayers + ", a: " + levelData.allLevelLayers)
+
+
+  // toString
+
+  // log(levelData.name + ": c: " + levelData.currentLevelLayers + ", a: " + levelData.allLevelLayers)
+  // log(levelData.name + ": shapeType: " + levelData.shapeTypeNumber + ", insideL: " + levelData.insideShapeLayers)
+  // log(levelData.name + ": rad: " + levelData.cornerRadius)
 
 
   return levelData

@@ -17,7 +17,7 @@ TypeInventory.isGroupType = function(type) {
 
 
 
-// types:
+// Types:
 
 // -1 — Default
 // 0 — MSLayerGroup
@@ -29,7 +29,6 @@ TypeInventory.isGroupType = function(type) {
 // 6 — MSTextLayer
 // 7 — MSSliceLayer
 // 8 — MSPage
-
 
 TypeInventory.returnTypeNumber = function(layer) {
 		var type = [layer className]
@@ -45,6 +44,48 @@ TypeInventory.returnTypeNumber = function(layer) {
 		else if (type == "MSPage") return 8
 		else return -1
 }
+
+
+
+// Number of sublayers of shape
+TypeInventory.returnInsideLayersNumber = function(layer) {
+		var layersNumber = layer.layers().count()
+		return layersNumber
+}
+
+
+// Shape types:
+
+// -1 — Non shape
+// 0 — Rectable
+// 1 — Oval
+// 2 — Complex
+// 3 — Others (MSStarShape, MSShapePathLayer)
+
+TypeInventory.getShapeTypeNumber = function(localLayer) {
+
+	var magicLayers = localLayer.layers()
+	if (magicLayers.count() > 1) { return 2 }
+
+
+	var shape = magicLayers.firstObject()
+	// log(shape.className())
+
+	if(shape && shape.isKindOfClass(MSOvalShape)) {
+		if ([[shape points] count] != 4) { return 2 }
+		return 1
+	}
+	else if(shape && shape.isKindOfClass(MSRectangleShape)) {
+		if ([[shape points] count] != 4) { return 2 }
+		return 0
+	}
+
+	return 3
+}
+
+
+
+
 
 
 

@@ -1,0 +1,17 @@
+
+// Corner Radius
+
+// -1 — not available
+// 0 — plain
+// X — rounded value
+
+var getCornerRadius = function(layer) {
+	var shape = layer.layers().firstObject()
+
+	if(shape && shape.isKindOfClass(MSRectangleShape)) {
+		var cornerValue = shape.cornerRadiusFloat()
+		return cornerValue
+	}
+
+	return 0
+}
