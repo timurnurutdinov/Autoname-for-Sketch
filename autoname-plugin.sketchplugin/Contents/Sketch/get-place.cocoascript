@@ -64,7 +64,7 @@ var getAbsolutePlaceArtboard = function(artboard) {
 
 
 var getPlace = function(layer) {
-	log(layer.name())
+	// log(layer.name())
 	if (layer == nil) { return [0, 0, 0, 0] }
 	// if (TypeInventory.isArtboardType(layer)) { return getAbsolutePlaceRect(layer) }
 
