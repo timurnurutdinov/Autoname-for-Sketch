@@ -6,6 +6,7 @@
 // X — rounded value
 
 var getCornerRadius = function(layer) {
+
 	var shape = layer.layers().firstObject()
 
 	if(shape && shape.isKindOfClass(MSRectangleShape)) {
@@ -13,5 +14,5 @@ var getCornerRadius = function(layer) {
 		return cornerValue
 	}
 
-	return 0
+	return -1
 }

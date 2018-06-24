@@ -64,20 +64,17 @@ var getAbsolutePlaceArtboard = function(artboard) {
 
 
 var getPlace = function(layer) {
-	// log(layer.name())
+	
 	if (layer == nil) { return [0, 0, 0, 0] }
-	// if (TypeInventory.isArtboardType(layer)) { return getAbsolutePlaceRect(layer) }
+	if (TypeInventory.isArtboardType(layer)) { return getAbsolutePlaceRect(layer) }
 
 	var currentPage = currentDocument.currentPage()
 
 	var layerValues = getAbsolutePlaceRect(layer)
-	var parentValues = getAbsolutePlaceArtboard(TypeInventory.findParentArtboard(layer))
+	var parentArtboardValues = getAbsolutePlaceArtboard(TypeInventory.findParentArtboard(layer))
+	var parentValues = getAbsolutePlaceRect([layer parentGroup])
 
-	var resultValues = [layerValues[0], layerValues[1], layerValues[2] - parentValues[2], layerValues[3] - parentValues[3]]
-
-	// log(TypeInventory.findParentArtboard(layer))
-	// log(parentValues)
-	// log(layerValues)
+	var resultValues = [layerValues[0], layerValues[1], layerValues[2] - parentArtboardValues[2], layerValues[3] - parentArtboardValues[3],  layerValues[2] - parentValues[2], layerValues[3] - parentValues[3]]
 
 	return resultValues
 }

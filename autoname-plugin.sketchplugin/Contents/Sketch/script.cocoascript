@@ -1,9 +1,12 @@
 @import 'type-inventory.cocoascript'
 @import 'get-place.cocoascript'
 @import 'get-corners.cocoascript'
+@import 'logger.js'
 
 
 var currentDocument = nil
+var leaningVectorFile = ""
+var leaningVectorFileLines = 0
 
 var onRun = function(context) {
 
@@ -22,9 +25,12 @@ var onRun = function(context) {
       scanCurrentLevel(currentLayer, topDeepLevel, currentLayerTypeNumber)
   }
 
-  [currentDocument showMessage:"done"]
-}
+  var exportPath = "/Users/tilllur/Desktop/leaningInput.txt"
+  writeTextToFile(leaningVectorFile, exportPath)
 
+  var learnFileDoneMessage = "Done " + leaningVectorFileLines + " lines"
+  [currentDocument showMessage:learnFileDoneMessage]
+}
 
 
 var scanCurrentLevel = function(layer, parentDeepLevel, parentTypeNumber) {
@@ -32,6 +38,7 @@ var scanCurrentLevel = function(layer, parentDeepLevel, parentTypeNumber) {
   var levelData = {
     name: "",
     typeName: "",
+
     typeNumber: -1,
     parentTypeNumber: -1,
     position: [],
@@ -66,7 +73,7 @@ var scanCurrentLevel = function(layer, parentDeepLevel, parentTypeNumber) {
   }
 
 
-  if (TypeInventory.isGroupType(levelData.typeName) || TypeInventory.isArtboardType(levelData.typeName)) {
+  if (TypeInventory.isLayerGroup(levelData.typeName) || TypeInventory.isArtboardType(levelData.typeName)) {
 
     var currentLevelArray = layer.layers()
     var parentTypeNumberForCurrentLevel = TypeInventory.returnParentTypeNumber(layer)
@@ -86,12 +93,38 @@ var scanCurrentLevel = function(layer, parentDeepLevel, parentTypeNumber) {
 
   // toString
 
+  // log(levelData.name + ": p: " + levelData.position)
   // log(levelData.name + ": c: " + levelData.currentLevelLayers + ", a: " + levelData.allLevelLayers)
   // log(levelData.name + ": shapeType: " + levelData.shapeTypeNumber + ", insideL: " + levelData.insideShapeLayers)
   // log(levelData.name + ": rad: " + levelData.cornerRadius)
   // log(levelData.name + ": lvl: " + levelData.currentDeepLevel)
-  log(levelData.name + ": pT: " + levelData.parentTypeNumber)
+  // log(levelData.name + ": pT: " + levelData.parentTypeNumber)
 
+  createLearnVector(levelData)
 
   return levelData
+}
+
+
+
+var dSep = function() { return ", " }
+var ln = function() { return "\n" }
+
+var createLearnVector = function(currentData) {
+    var currentLayerData = ""
+
+    for (i in currentData.position) { currentLayerData += currentData.position[i] + dSep() }
+    currentLayerData += currentData.currentLevelLayers + dSep()
+    currentLayerData += currentData.allLevelLayers + dSep()
+    currentLayerData += currentData.typeNumber + dSep()
+    currentLayerData += currentData.shapeTypeNumber + dSep()
+    currentLayerData += currentData.insideShapeLayers + dSep()
+    currentLayerData += currentData.cornerRadius + dSep()
+    currentLayerData += currentData.currentDeepLevel + dSep()
+    currentLayerData += currentData.parentTypeNumber + dSep()
+
+    currentLayerData += currentData.name
+
+    leaningVectorFileLines++
+    leaningVectorFile += currentLayerData + ln()
 }
