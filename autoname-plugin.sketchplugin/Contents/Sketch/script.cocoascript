@@ -17,7 +17,9 @@ var onRun = function(context) {
 
   for (var i = 0; i < pageLayers.count(); i++) {
       var currentLayer = [pageLayers objectAtIndex:i]
-      scanCurrentLevel(currentLayer, topDeepLevel)
+      currentLayerTypeNumber = TypeInventory.returnParentTypeNumber([currentLayer parentGroup])
+
+      scanCurrentLevel(currentLayer, topDeepLevel, currentLayerTypeNumber)
   }
 
   [currentDocument showMessage:"done"]
@@ -25,12 +27,13 @@ var onRun = function(context) {
 
 
 
-var scanCurrentLevel = function(layer, parentDeepLevel) {
+var scanCurrentLevel = function(layer, parentDeepLevel, parentTypeNumber) {
 
   var levelData = {
     name: "",
     typeName: "",
     typeNumber: -1,
+    parentTypeNumber: -1,
     position: [],
 
     currentLevelLayers: 0,
@@ -41,13 +44,13 @@ var scanCurrentLevel = function(layer, parentDeepLevel) {
     shapeTypeNumber: -1,
     insideShapeLayers: 0
 
-
   }
 
   levelData.name = layer.name()
   levelData.typeName = layer.className()
   levelData.typeNumber = TypeInventory.returnTypeNumber(layer)
   levelData.currentDeepLevel = ++parentDeepLevel
+  levelData.parentTypeNumber = parentTypeNumber
 
   levelData.position = getPlace(layer)
 
@@ -66,12 +69,13 @@ var scanCurrentLevel = function(layer, parentDeepLevel) {
   if (TypeInventory.isGroupType(levelData.typeName) || TypeInventory.isArtboardType(levelData.typeName)) {
 
     var currentLevelArray = layer.layers()
+    var parentTypeNumberForCurrentLevel = TypeInventory.returnParentTypeNumber(layer)
     levelData.currentLevelLayers = currentLevelArray.count()
     levelData.allLevelLayers = levelData.currentLevelLayers
 
     for (var i = 0; i < currentLevelArray.count(); i++) {
         var currentChildLayer = [currentLevelArray objectAtIndex: i]
-        var childLevelData = scanCurrentLevel(currentChildLayer, levelData.currentDeepLevel)
+        var childLevelData = scanCurrentLevel(currentChildLayer, levelData.currentDeepLevel, parentTypeNumberForCurrentLevel)
         levelData.allLevelLayers += childLevelData.allLevelLayers
         // log("Got " + childLevelData.currentLevelLayers + " layers from " + childLevelData.name)
     }
@@ -86,6 +90,7 @@ var scanCurrentLevel = function(layer, parentDeepLevel) {
   // log(levelData.name + ": shapeType: " + levelData.shapeTypeNumber + ", insideL: " + levelData.insideShapeLayers)
   // log(levelData.name + ": rad: " + levelData.cornerRadius)
   // log(levelData.name + ": lvl: " + levelData.currentDeepLevel)
+  log(levelData.name + ": pT: " + levelData.parentTypeNumber)
 
 
   return levelData

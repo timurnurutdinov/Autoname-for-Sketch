@@ -46,6 +46,23 @@ TypeInventory.returnTypeNumber = function(layer) {
 }
 
 
+// Types:
+
+// -1 — None?
+// 0 — MSLayerGroup
+// 1 — MSArtboardGroup
+// 2 — MSPage
+
+TypeInventory.returnParentTypeNumber = function(layer) {
+		var type = [layer className]
+
+		if (type == "MSLayerGroup") return 0
+		else if (type == "MSArtboardGroup") return 1
+		else if (type == "MSPage") return 2
+		else return -1
+}
+
+
 
 // Number of sublayers of shape
 TypeInventory.returnInsideLayersNumber = function(layer) {
