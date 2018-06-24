@@ -1,0 +1,36 @@
+@import 'type-inventory.cocoascript'
+@import 'get-place.cocoascript'
+
+
+var currentDocument = nil
+
+var onRun = function(context) {
+
+  currentDocument = context.document
+  var page = [currentDocument currentPage]
+  var pageLayers = [page layers]
+
+  log("######## STARTED")
+
+
+  for (var i = 0; i < pageLayers.count(); i++) {
+      var currentLayer = [pageLayers objectAtIndex:i]
+      cleanCurrentLevel(currentLayer)
+  }
+
+  [currentDocument showMessage:"done"]
+}
+
+
+
+var cleanCurrentLevel = function(layer) {
+  var type = [layer className]
+  log(getPlace(layer, false))
+
+  if (TypeInventory.isGroupType(type) || TypeInventory.isArtboardType(type)) {
+
+    var groupChildren = layer.layers()
+    for (var i = 0; i < groupChildren.count(); i++) { cleanCurrentLevel([groupChildren objectAtIndex: i]) }
+  }
+
+}

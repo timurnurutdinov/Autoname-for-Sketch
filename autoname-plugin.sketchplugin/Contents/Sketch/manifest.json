@@ -1,0 +1,24 @@
+{
+  "author" : "",
+  "commands" : [
+    {
+      "script" : "script.cocoascript",
+      "name" : "autoname-plugin",
+      "handlers" : {
+        "run" : "onRun"
+      },
+      "identifier" : "com.bohemiancoding.sketch.runscriptidentifier"
+    }
+  ],
+  "menu" : {
+    "title" : "autoname-plugin",
+    "items" : [
+      "com.bohemiancoding.sketch.runscriptidentifier"
+    ]
+  },
+  "identifier" : "com.example.sketch.1ae48837-4efc-4eda-96cb-0603c1375b56",
+  "version" : "1.0",
+  "description" : "",
+  "authorEmail" : "",
+  "name" : "autoname-plugin"
+}
