@@ -13,9 +13,11 @@ var onRun = function(context) {
 
   log("######## STARTED")
 
+  var topDeepLevel = -1
+
   for (var i = 0; i < pageLayers.count(); i++) {
       var currentLayer = [pageLayers objectAtIndex:i]
-      scanCurrentLevel(currentLayer)
+      scanCurrentLevel(currentLayer, topDeepLevel)
   }
 
   [currentDocument showMessage:"done"]
@@ -23,7 +25,7 @@ var onRun = function(context) {
 
 
 
-var scanCurrentLevel = function(layer) {
+var scanCurrentLevel = function(layer, parentDeepLevel) {
 
   var levelData = {
     name: "",
@@ -33,6 +35,7 @@ var scanCurrentLevel = function(layer) {
 
     currentLevelLayers: 0,
     allLevelLayers: 0,
+    currentDeepLevel: -1,
 
     cornerRadius: -1,
     shapeTypeNumber: -1,
@@ -44,7 +47,10 @@ var scanCurrentLevel = function(layer) {
   levelData.name = layer.name()
   levelData.typeName = layer.className()
   levelData.typeNumber = TypeInventory.returnTypeNumber(layer)
+  levelData.currentDeepLevel = ++parentDeepLevel
+
   levelData.position = getPlace(layer)
+
 
 
   if (TypeInventory.isShapeGroupType(levelData.typeName)) {
@@ -64,7 +70,8 @@ var scanCurrentLevel = function(layer) {
     levelData.allLevelLayers = levelData.currentLevelLayers
 
     for (var i = 0; i < currentLevelArray.count(); i++) {
-        var childLevelData = scanCurrentLevel([currentLevelArray objectAtIndex: i])
+        var currentChildLayer = [currentLevelArray objectAtIndex: i]
+        var childLevelData = scanCurrentLevel(currentChildLayer, levelData.currentDeepLevel)
         levelData.allLevelLayers += childLevelData.allLevelLayers
         // log("Got " + childLevelData.currentLevelLayers + " layers from " + childLevelData.name)
     }
@@ -78,6 +85,7 @@ var scanCurrentLevel = function(layer) {
   // log(levelData.name + ": c: " + levelData.currentLevelLayers + ", a: " + levelData.allLevelLayers)
   // log(levelData.name + ": shapeType: " + levelData.shapeTypeNumber + ", insideL: " + levelData.insideShapeLayers)
   // log(levelData.name + ": rad: " + levelData.cornerRadius)
+  // log(levelData.name + ": lvl: " + levelData.currentDeepLevel)
 
 
   return levelData
